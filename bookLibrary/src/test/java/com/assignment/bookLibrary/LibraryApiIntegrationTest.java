@@ -3,8 +3,6 @@ package com.assignment.bookLibrary;
 import com.assignment.bookLibrary.repository.AuthorRepository;
 import com.assignment.bookLibrary.repository.BookRepository;
 import com.assignment.bookLibrary.repository.LoanRepository;
-import com.assignment.bookLibrary.model.Author;
-import com.assignment.bookLibrary.model.Book;
 
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;

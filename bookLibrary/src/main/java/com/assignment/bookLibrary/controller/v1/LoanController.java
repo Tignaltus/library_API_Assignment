@@ -3,6 +3,10 @@ package com.assignment.bookLibrary.controller.v1;
 import com.assignment.bookLibrary.dto.loan.LoanRequest;
 import com.assignment.bookLibrary.dto.loan.LoanResponse;
 import com.assignment.bookLibrary.service.LoanService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/loans")
+@Tag(name = "Loans", description = "Endpoints for managing book loans")
 public class LoanController {
 
     private final LoanService loanService;
@@ -20,12 +25,22 @@ public class LoanController {
         this.loanService = loanService;
     }
 
+    @Operation(summary = "Create a new loan", description = "Creates a new loan for a book if it is available")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Loan created successfully"),
+            @ApiResponse(responseCode = "400", description = "Book is already on loan or request is invalid"),
+            @ApiResponse(responseCode = "404", description = "Book not found")
+    })
     @PostMapping
     public ResponseEntity<LoanResponse> createLoan(@Valid @RequestBody LoanRequest request) {
         LoanResponse response = loanService.createLoan(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @Operation(summary = "Get all active loans", description = "Returns all currently active book loans")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Loans retrieved successfully")
+    })
     @GetMapping
     public ResponseEntity<List<LoanResponse>> getAllLoans() {
         return ResponseEntity.ok(loanService.getAllLoans());

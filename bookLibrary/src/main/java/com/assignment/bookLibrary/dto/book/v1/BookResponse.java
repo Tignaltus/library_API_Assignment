@@ -1,11 +1,23 @@
 package com.assignment.bookLibrary.dto.book.v1;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(description = "Response body for a book in API version 1")
 public class BookResponse {
 
+    @Schema(description = "Book id")
     private Long id;
+
+    @Schema(description = "Title of the book")
     private String title;
+
+    @Schema(description = "ISBN number of the book")
     private String isbn;
+
+    @Schema(description = "Year the book was published")
     private int publishedYear;
+
+    @Schema(description = "Name of the author")
     private String authorName;
 
     public BookResponse(Long id, String title, String isbn, int publishedYear, String authorName) {

@@ -9,12 +9,14 @@ public class Book {
     @Id @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String title;
+
     private String isbn;
-    int publishedYear;
+    private int publishedYear;
 
     @ManyToOne
-    @JoinColumn(name = "author_id")
+    @JoinColumn(name = "author_id", nullable = false)
     private Author author;
 
     public Book() {}

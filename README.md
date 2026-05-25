@@ -161,4 +161,4 @@ Som ni kan se så var det inte en större skillnad här just. Om vi gör matten 
 ((65 - 66) / 65) * 100 = -1.54 %
 `
 
-Detta kan bero på att det jag gjorde här inte vär särskilt krävande, och ett annat anrop med denna mängeden hade gjort en större skillnad. Men jag tycker ändå att detta bevisar att systemet fungerar och är testbart på många olika sätt.
+En 1.54% tyngre visades Caching vara över ingen Caching i det testet jag prövade. Detta kan bero på att det jag gjorde här inte var särskilt krävande, och ett annat anrop med denna mängeden hade gjort en större skillnad. Men jag tycker ändå att detta bevisar att systemet fungerar och är testbart på många olika sätt.

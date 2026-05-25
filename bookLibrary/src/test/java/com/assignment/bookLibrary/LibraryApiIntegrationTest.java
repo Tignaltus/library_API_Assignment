@@ -29,6 +29,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
+
 @SpringBootTest
 @AutoConfigureMockMvc
 class LibraryApiIntegrationTest {
@@ -59,7 +61,8 @@ class LibraryApiIntegrationTest {
     void createAuthor_andGetAuthorById_returnsAuthor() throws Exception {
         Long authorId = createAuthor("J.K. Rowling");
 
-        mockMvc.perform(get("/api/v1/authors/{id}", authorId))
+        mockMvc.perform(get("/api/v1/authors/{id}", authorId)
+                        .with(httpBasic("libraryuser", "librarypass")))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(authorId))
                 .andExpect(jsonPath("$.name").value("J.K. Rowling"))
@@ -71,13 +74,15 @@ class LibraryApiIntegrationTest {
         Long authorId = createAuthor("J.R.R. Tolkien");
         Long bookId = createBook(authorId, "The Hobbit", "9780261103344", 1937);
 
-        mockMvc.perform(get("/api/v1/books/{id}", bookId))
+        mockMvc.perform(get("/api/v1/books/{id}", bookId)
+                        .with(httpBasic("libraryuser", "librarypass")))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(bookId))
                 .andExpect(jsonPath("$.title").value("The Hobbit"))
                 .andExpect(jsonPath("$.authorName").value("J.R.R. Tolkien"));
 
-        mockMvc.perform(get("/api/v2/books"))
+        mockMvc.perform(get("/api/v2/books")
+                        .with(httpBasic("libraryuser", "librarypass")))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.version").value("v2"))
                 .andExpect(jsonPath("$.data[0].id").value(bookId))
@@ -91,6 +96,7 @@ class LibraryApiIntegrationTest {
         Long bookId = createBook(authorId, "1984", "9780451524935", 1949);
 
         mockMvc.perform(post("/api/v1/loans")
+                        .with(httpBasic("libraryuser", "librarypass"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(Map.of("bookId", bookId))))
                 .andExpect(status().isCreated())
@@ -98,18 +104,21 @@ class LibraryApiIntegrationTest {
                 .andExpect(jsonPath("$.bookTitle").value("1984"));
 
         mockMvc.perform(post("/api/v1/loans")
+                        .with(httpBasic("libraryuser", "librarypass"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(Map.of("bookId", bookId))))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("Book is already on loan"));
 
-        mockMvc.perform(get("/api/v2/books"))
+        mockMvc.perform(get("/api/v2/books")
+                        .with(httpBasic("libraryuser", "librarypass")))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data[0].available").value(false));
     }
 
     private Long createAuthor(String name) throws Exception {
         String response = mockMvc.perform(post("/api/v1/authors")
+                        .with(httpBasic("libraryuser", "librarypass"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(Map.of("name", name))))
                 .andExpect(status().isCreated())
@@ -123,6 +132,7 @@ class LibraryApiIntegrationTest {
 
     private Long createBook(Long authorId, String title, String isbn, int publishedYear) throws Exception {
         String response = mockMvc.perform(post("/api/v1/books")
+                        .with(httpBasic("libraryuser", "librarypass"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(Map.of(
                                 "title", title,
@@ -141,7 +151,8 @@ class LibraryApiIntegrationTest {
 
     @Test
     void getBookById_whenBookDoesNotExist_returnsNotFound() throws Exception {
-        mockMvc.perform(get("/api/v1/books/{id}", 9999L))
+        mockMvc.perform(get("/api/v1/books/{id}", 9999L)
+                        .with(httpBasic("libraryuser", "librarypass")))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message").value("Book with id 9999 not found"));
     }
@@ -169,6 +180,7 @@ class LibraryApiIntegrationTest {
                         startLatch.await();
 
                         int status = mockMvc.perform(post("/api/v1/loans")
+                                        .with(httpBasic("libraryuser", "librarypass"))
                                         .contentType(MediaType.APPLICATION_JSON)
                                         .content(objectMapper.writeValueAsString(Map.of("bookId", bookId))))
                                 .andReturn()

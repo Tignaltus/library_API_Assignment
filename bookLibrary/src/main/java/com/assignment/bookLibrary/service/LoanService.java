@@ -1,19 +1,21 @@
 package com.assignment.bookLibrary.service;
 
-import com.assignment.bookLibrary.dto.loan.*;
+import com.assignment.bookLibrary.dto.common.PagedResponse;
+import com.assignment.bookLibrary.dto.loan.LoanRequest;
+import com.assignment.bookLibrary.dto.loan.LoanResponse;
 import com.assignment.bookLibrary.exception.BookAlreadyLoanedException;
 import com.assignment.bookLibrary.exception.BookNotFoundException;
 import com.assignment.bookLibrary.model.Book;
 import com.assignment.bookLibrary.model.Loan;
 import com.assignment.bookLibrary.repository.BookRepository;
 import com.assignment.bookLibrary.repository.LoanRepository;
-
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Service
 public class LoanService {
@@ -31,7 +33,7 @@ public class LoanService {
         Long bookId = request.getBookId();
 
         Book book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new BookNotFoundException("Book with id: " + bookId + " not found"));
+                .orElseThrow(() -> new BookNotFoundException("Book with id " + bookId + " not found"));
 
         if (loanRepository.existsByBookIdAndReturnDateIsNull(bookId)) {
             throw new BookAlreadyLoanedException("Book is already on loan");
@@ -51,11 +53,17 @@ public class LoanService {
         }
     }
 
-    public List<LoanResponse> getAllLoans() {
-        return loanRepository.findByReturnDateIsNull()
-                .stream()
-                .map(this::mapToResponse)
-                .toList();
+    public PagedResponse<LoanResponse> getAllLoans(Pageable pageable) {
+        Page<LoanResponse> page = loanRepository.findByReturnDateIsNull(pageable)
+                .map(this::mapToResponse);
+
+        return new PagedResponse<>(
+                page.getContent(),
+                page.getNumber(),
+                page.getSize(),
+                page.getTotalElements(),
+                page.getTotalPages()
+        );
     }
 
     private LoanResponse mapToResponse(Loan loan) {

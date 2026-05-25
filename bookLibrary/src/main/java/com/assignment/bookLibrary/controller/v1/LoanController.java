@@ -12,6 +12,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.assignment.bookLibrary.dto.common.PagedResponse;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+
 import java.util.List;
 
 @RestController
@@ -41,8 +46,14 @@ public class LoanController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Loans retrieved successfully")
     })
+
     @GetMapping
-    public ResponseEntity<List<LoanResponse>> getAllLoans() {
-        return ResponseEntity.ok(loanService.getAllLoans());
+    public ResponseEntity<PagedResponse<LoanResponse>> getAllLoans(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sort) {
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sort));
+        return ResponseEntity.ok(loanService.getAllLoans(pageable));
     }
 }

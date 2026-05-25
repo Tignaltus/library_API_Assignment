@@ -1,17 +1,14 @@
-package com.assignment.bookLibrary.dto.book.v2;
+package com.assignment.bookLibrary.dto.common;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.List;
 
-@Schema(description = "Versioned paged response body containing a list of books")
-public class BookListResponse {
+@Schema(description = "Paged response wrapper")
+public class PagedResponse<T> {
 
-    @Schema(description = "List of books")
-    private List<BookResponse> data;
-
-    @Schema(description = "API version")
-    private String version;
+    @Schema(description = "Page content")
+    private List<T> content;
 
     @Schema(description = "Current page number, 0-based")
     private int page;
@@ -25,21 +22,16 @@ public class BookListResponse {
     @Schema(description = "Total number of pages")
     private int totalPages;
 
-    public BookListResponse(List<BookResponse> data, String version, int page, int size, long totalElements, int totalPages) {
-        this.data = data;
-        this.version = version;
+    public PagedResponse(List<T> content, int page, int size, long totalElements, int totalPages) {
+        this.content = content;
         this.page = page;
         this.size = size;
         this.totalElements = totalElements;
         this.totalPages = totalPages;
     }
 
-    public List<BookResponse> getData() {
-        return data;
-    }
-
-    public String getVersion() {
-        return version;
+    public List<T> getContent() {
+        return content;
     }
 
     public int getPage() {

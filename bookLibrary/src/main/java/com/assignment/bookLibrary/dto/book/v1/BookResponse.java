@@ -2,8 +2,12 @@ package com.assignment.bookLibrary.dto.book.v1;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.io.Serializable;
+
 @Schema(description = "Response body for a book in API version 1")
-public class BookResponse {
+public class BookResponse implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @Schema(description = "Book id")
     private Long id;

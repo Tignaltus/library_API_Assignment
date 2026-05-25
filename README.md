@@ -140,9 +140,25 @@ Kör projektet via IntelliJ eller Maven.
 ### 4. Testa Projektet
 Använd Swagger UI och logga in med de användarnamn och lösenord som du lagrade i Vault:en.
 
+# Prestandatest
+Använde **JMeter** för att lätt göra benchmark tester.
 
+Detta var uppsättningen för benchmark-testerna:
 
+![Benchmark Settings](bookLibrary/images/Settings.PNG)
 
+Första testet var utan Caching och resultatet såg ut såhär:
 
+![No Cache](bookLibrary/images/Summary_Report_noCache.PNG)
 
+Andra testet var med Caching och resultatet såg ut såhär:
 
+![With Cache](bookLibrary/images/Summary_Report_withCache.PNG)
+
+Som ni kan se så var det inte en större skillnad här just. Om vi gör matten så får vi ut en liten förbättring i prestanda men väldigt försumbar i detta fallet.
+
+`
+((65 - 66) / 65) * 100 = -1.54 %
+`
+
+Detta kan bero på att det jag gjorde här inte vär särskilt krävande, och ett annat anrop med denna mängeden hade gjort en större skillnad. Men jag tycker ändå att detta bevisar att systemet fungerar och är testbart på många olika sätt.

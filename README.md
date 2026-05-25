@@ -80,7 +80,6 @@
 ---
 
 ## Pagination
-
 List-endpoints använder pagination för att undvika att för stora datamängder skickas tillbaka i ett svar.
 
 Exempel på query-parametrar:
@@ -93,10 +92,57 @@ Exempel:
 GET /api/v1/books?page=0&size=10&sort=id
 ```
 
-## Kom Igång Lokalt
+## Startdata
+
+Projektet använder data.sql för att lägga in startdata i databasen vid uppstart.
+Detta är för att underlätta testning så att man inte behöver lägga till en ny bok varje gång vid uppstart.
+
+Just nu finns det bara en bok:
+
+- Shindou Masaoki(Author) med id 1
+- Ruri Dragon(Book) med id 1
+
+# Kom Igång Lokalt
 ### Program Krav
 - Docker Desktop
 - Maven
 - Java (v8 eller senare)
+
+### 1. Starta Redis
+Skriv i terminalen
+```Bash
+docker run --name some-redis -p 6379:6379 -d redis
+```
+Om containern redan finns
+```Bash
+docker start some-redis
+```
+
+### 2. Starta Vault
+Samma här i terminalen skriv
+```Bash
+docker run --cap-add=IPC_LOCK -e VAULT_DEV_ROOT_TOKEN_ID=root -e VAULT_DEV_LISTEN_ADDRESS=0.0.0.0:8200 -p 8200:8200 --name some-vault -d hashicorp/vault:latest server -dev
+```
+Lägg in användarnamn(Username) och lösenord(Password) med:
+```Bash
+docker exec -it some-vault sh
+```
+Sedan inne i containern:
+```Bash
+export VAULT_ADDR=http://127.0.0.1:8200
+export VAULT_TOKEN=root
+
+vault kv put secret/application app.security.username=libraryuser app.security.password=librarypass
+```
+### 3. Starta Programmet
+Kör projektet via IntelliJ eller Maven.
+
+### 4. Testa Projektet
+Använd Swagger UI och logga in med de användarnamn och lösenord som du lagrade i Vault:en.
+
+
+
+
+
 
 

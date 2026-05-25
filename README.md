@@ -92,6 +92,13 @@ Exempel:
 GET /api/v1/books?page=0&size=10&sort=id
 ```
 
+## Swagger och H2
+
+När applikationen körs lokalt kan följande användas:
+
+- Swagger UI: `http://localhost:8080/swagger-ui.html`
+- H2 Console: `http://localhost:8080/h2-console`
+
 ## Startdata
 
 Projektet använder data.sql för att lägga in startdata i databasen vid uppstart.
@@ -155,10 +162,10 @@ Andra testet var med Caching och resultatet såg ut såhär:
 
 ![With Cache](bookLibrary/images/Summary_Report_withCache.PNG)
 
-Som ni kan se så var det inte en större skillnad här just. Om vi gör matten så får vi ut en liten förbättring i prestanda men väldigt försumbar i detta fallet.
+Som ni kan se var det ingen större skillnad här. Om vi räknar på resultatet får vi:
 
 `
 ((65 - 66) / 65) * 100 = -1.54 %
 `
 
-1.54% tyngre på prestandan visades Caching-testet vara över ingen Caching-testet i det testet jag prövade. Detta kan bero på att det jag gjorde här inte var särskilt krävande, och ett annat anrop med denna mängeden hade gjort en större skillnad. Men jag tycker ändå att detta bevisar att systemet fungerar och är testbart på många olika sätt.
+Det innebär att caching-testet i just denna lokala testmiljö blev cirka 1.54 % tyngre än testet utan caching. Detta kan bero på att anropet inte var särskilt krävande och att H2-databasen redan är väldigt snabb i minnet. Däremot visar testet att lösningen fungerar och är möjlig att verifiera praktiskt.
